@@ -5,19 +5,35 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from .database.db import init_db
 from .routes import analyze, history, settings, export
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 app = FastAPI(
     title="CodeWaste Detector API",
     description="Intelligent static code optimization and redundant waste detection platform",
     version="1.0.0"
 )
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
+
+if FRONTEND_DIST.exists():
+    app.mount(
+        "/assets",
+        StaticFiles(directory=FRONTEND_DIST / "assets"),
+        name="assets"
+    )
+
+@app.get("/")
+async def serve_frontend():
+    return FileResponse(FRONTEND_DIST / "index.html")
 @app.get("/")
 def home():
     return {
         "message": "Welcome to CodeWasteAI",
         "status": "Backend is running successfully"
     }
-    
+
 START_TIME = time.time()
 
 # Configure CORS for local development and production
