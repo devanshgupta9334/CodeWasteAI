@@ -11,7 +11,13 @@ app = FastAPI(
     description="Intelligent static code optimization and redundant waste detection platform",
     version="1.0.0"
 )
-
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to CodeWasteAI",
+        "status": "Backend is running successfully"
+    }
+    
 START_TIME = time.time()
 
 # Configure CORS for local development and production
